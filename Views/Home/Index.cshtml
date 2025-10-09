@@ -1,0 +1,14 @@
+@model IEnumerable<Restaurant>
+@{
+ViewBag.Title = "Головна";
+}
+<h1>Ресторани</h1>
+<ul>
+@foreach(var r in Model)
+{
+<li>
+<strong>@r.Name</strong> — @r.Address
+<a href="/Restaurant/Menu/Index?restaurantId=@r.Id">Меню</a>
+</li>
+}
+</ul>

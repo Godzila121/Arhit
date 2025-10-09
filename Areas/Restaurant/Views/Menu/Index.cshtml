@@ -1,0 +1,11 @@
+@model IEnumerable<MenuItem>
+@{
+ViewBag.Title = "Меню";
+}
+<h2>Меню</h2>
+<ul>
+@foreach(var item in Model)
+{
+<li>@item.Name — @item.Price.ToString("C")</li>
+}
+</ul>
