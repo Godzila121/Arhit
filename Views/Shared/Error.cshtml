@@ -1,0 +1,14 @@
+@model FoodDelivery.Models.ErrorViewModel // <--- ПЕРЕВІРТЕ, що тут вказано правильний NAMESPACE
+@{
+    ViewData["Title"] = "Error";
+}
+
+<h1 class="text-danger">Помилка.</h1>
+<h2 class="text-danger">Сталася помилка під час обробки вашого запиту.</h2>
+
+@if (Model.ShowRequestId) // <--- Тепер ця властивість існує
+{
+    <p>
+        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    </p>
+}

@@ -1,0 +1,29 @@
+@model IEnumerable<FoodDelivery.Models.Courier>
+
+@{
+    ViewData["Title"] = "Manage Couriers";
+}
+
+<h1>Manage Couriers</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Full Name</th>
+            <th>Phone</th>
+            <th>Is Active</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var courier in Model)
+        {
+            <tr>
+                <td>@courier.Id</td>
+                <td>@courier.FullName</td>
+                <td>@courier.Phone</td>
+                <td>@courier.IsActive</td>
+            </tr>
+        }
+    </tbody>
+</table>

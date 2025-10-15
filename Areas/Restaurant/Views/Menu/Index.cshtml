@@ -1,11 +1,46 @@
+@using FoodDelivery.Models
 @model IEnumerable<MenuItem>
+
 @{
-ViewBag.Title = "Меню";
+    ViewData["Title"] = "Меню ресторану";
+    // Отримуємо назву ресторану для заголовка. 
+    // Це спрацює, якщо в моделі є хоча б один елемент.
+    var restaurantName = Model.FirstOrDefault()?.Restaurant.Name ?? "Наш";
 }
-<h2>Меню</h2>
-<ul>
-@foreach(var item in Model)
-{
-<li>@item.Name — @item.Price.ToString("C")</li>
-}
-</ul>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="mb-0">Меню ресторану "@restaurantName"</h1>
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Повернутись до ресторанів</a>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <table class="table table-hover align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Страва</th>
+                        <th scope="col">Опис</th>
+                        <th scope="col" class="text-end">Ціна</th>
+                        <th scope="col" class="text-center">Дія</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td><strong>@item.Name</strong></td>
+                            <td>@item.Description</td>
+                            <td class="text-end">@item.Price.ToString("C")</td>
+                            <td class="text-center">
+                                <a asp-area="" asp-controller="Cart" asp-action="AddToCart" asp-route-menuItemId="@item.Id" class="btn btn-primary btn-sm">
+                                    🛒 Додати в кошик
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

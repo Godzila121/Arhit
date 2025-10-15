@@ -1,0 +1,27 @@
+@model IEnumerable<FoodDelivery.Models.Restaurant>
+
+@{
+    ViewData["Title"] = "Manage Restaurants";
+}
+
+<h1>Manage Restaurants</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Address</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var restaurant in Model)
+        {
+            <tr>
+                <td>@restaurant.Id</td>
+                <td>@restaurant.Name</td>
+                <td>@restaurant.Address</td>
+            </tr>
+        }
+    </tbody>
+</table>

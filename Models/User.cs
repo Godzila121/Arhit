@@ -1,8 +1,15 @@
-public class User
+namespace FoodDelivery.Models; // <--- ДОДАНО ЦЕЙ РЯДОК
+using Microsoft.AspNetCore.Identity;
+using System.Collections.Generic; // Можливо, знадобиться додати
+using Microsoft.AspNetCore.Identity;
+
+public class User : IdentityUser
 {
-public int Id { get; set; }
-public string FullName { get; set; } = null!;
-public string Email { get; set; } = null!;
-public ICollection<Order> Orders { get; set; } = new List<Order>();
-public ICollection<Review> Reviews { get; set; } = new List<Review>();
+    // Ваші існуючі властивості, наприклад:
+    public string? FullName { get; set; }
+    public string? Address { get; set; }
+
+    // --- ДОДАЙТЕ ЦЕЙ РЯДОК ---
+    // Це зворотній зв'язок для Entity Framework
+    public virtual ICollection<Restaurant> Restaurants { get; set; } = new List<Restaurant>();
 }
