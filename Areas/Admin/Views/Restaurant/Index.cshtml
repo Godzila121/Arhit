@@ -1,29 +1,53 @@
-@model IEnumerable<FoodDelivery.Models.Restaurant>
+@model FoodDelivery.ViewModels.RestaurantDetailsViewModel
 
 @{
-    ViewData["Title"] = "Керування Ресторанами";
+    ViewData["Title"] = Model.Restaurant.Name;
+    // Вказуємо, що потрібно використовувати головний шаблон сайту
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container my-5">
-    <h1>@ViewData["Title"]</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="display-5 fw-bold">@Model.Restaurant.Name</h1>
+            <p class="text-muted">@Model.Restaurant.Address</p>
+        </div>
+        <a href="@Url.Action("Index", "Restaurant")" class="btn btn-outline-secondary">
+     Повернутись до ресторанів
+</a>
+    </div>
 
-    <table class="table table-striped table-hover">
-        <thead class="thead-dark">
-            <tr>
-                <th>ID</th>
-                <th>Назва</th>
-                <th>Адреса</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var restaurant in Model)
+    <hr />
+
+    <h3 class="mt-4">Меню</h3>
+    @if (Model.Restaurant.MenuItems != null && Model.Restaurant.MenuItems.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            @foreach (var item in Model.Restaurant.MenuItems)
             {
-                <tr>
-                    <td>@restaurant.Id</td>
-                    <td>@restaurant.Name</td>
-                    <td>@restaurant.Address</td>
-                </tr>
+                <div class="col">
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between">
+                                <h5 class="card-title">@item.Name</h5>
+                                <h5 class="card-title text-primary">@item.Price.ToString("C")</h5>
+                            </div>
+                            <p class="card-text flex-grow-1">@(item.Description ?? "Опис страви відсутній.")</p>
+                            <a asp-area="" asp-controller="Cart" asp-action="AddToCart" asp-route-menuItemId="@item.Id" class="btn btn-primary align-self-start">
+                                🛒 Додати в кошик
+                            </a>
+                        </div>
+                    </div>
+                </div>
             }
-        </tbody>
-    </table>
+        </div>
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-info" role="alert">
+                На жаль, у цього ресторану ще немає страв у меню.
+            </div>
+        </div>
+    }
 </div>

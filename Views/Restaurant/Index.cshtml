@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Ресторани";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container my-5">
@@ -11,12 +12,9 @@
         {
             <div class="col">
                 <div class="card h-100 shadow-sm">
-                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="Зображення ресторану">
                     <div class="card-body">
                         <h5 class="card-title">@restaurant.Name</h5>
-                        
                         <p class="card-text">@(restaurant.Description ?? "Опис відсутній.")</p>
-                        
                         <p class="card-text"><small class="text-muted">@restaurant.Address</small></p>
                         <a asp-action="Details" asp-controller="Restaurant" asp-route-id="@restaurant.Id" class="btn btn-primary">Переглянути меню</a>
                     </div>

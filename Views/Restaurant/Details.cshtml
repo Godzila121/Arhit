@@ -1,28 +1,29 @@
-@using FoodDelivery.Models
-@model IEnumerable<MenuItem>
+@model FoodDelivery.ViewModels.RestaurantDetailsViewModel
 
 @{
-    ViewData["Title"] = "Меню ресторану";
-    var restaurantName = Model.FirstOrDefault()?.Restaurant.Name ?? "Наш";
-    // Вказуємо, що потрібно використовувати головний шаблон сайту
+    ViewData["Title"] = Model.Restaurant.Name;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <div class="container my-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 class="display-5 fw-bold">Меню "@restaurantName"</h1>
-            <p class="text-muted">Оберіть страви, які вам до смаку.</p>
+            <h1 class="display-5 fw-bold">@Model.Restaurant.Name</h1>
+            <p class="text-muted">@Model.Restaurant.Address</p>
         </div>
-        <a href="@Url.Action("Index", "Restaurant", new { area = "" })" class="btn btn-outline-secondary">
+        
+        <a href="@Url.Action("Index", "Restaurant")" class="btn btn-outline-secondary">
      Повернутись до ресторанів
 </a>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-2 g-4">
-        @if (Model.Any())
-        {
-            @foreach (var item in Model)
+    <hr />
+
+    <h3 class="mt-4">Меню</h3>
+    @if (Model.Restaurant.MenuItems != null && Model.Restaurant.MenuItems.Any())
+    {
+        <div class="row row-cols-1 row-cols-md-2 g-4">
+            @foreach (var item in Model.Restaurant.MenuItems)
             {
                 <div class="col">
                     <div class="card h-100 shadow-sm">
@@ -39,14 +40,14 @@
                     </div>
                 </div>
             }
-        }
-        else
-        {
-            <div class="col-12">
-                <div class="alert alert-info" role="alert">
-                    На жаль, у цього ресторану ще немає страв у меню.
-                </div>
+        </div>
+    }
+    else
+    {
+        <div class="col-12">
+            <div class="alert alert-info" role="alert">
+                На жаль, у цього ресторану ще немає страв у меню.
             </div>
-        }
-    </div>
+        </div>
+    }
 </div>

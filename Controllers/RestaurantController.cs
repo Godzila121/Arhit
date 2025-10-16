@@ -15,16 +15,12 @@ namespace FoodDelivery.Controllers
             _context = context;
         }
 
-        // GET: /Restaurant/Index
-        // Цей метод буде показувати список всіх ресторанів
         public async Task<IActionResult> Index()
         {
-            var restaurants = await _context.Restaurants.ToListAsync();
+          var restaurants = await _context.Restaurants.ToListAsync();
             return View(restaurants);
         }
 
-        // GET: /Restaurant/Details/5
-        // Цей метод покаже детальну інформацію про один ресторан
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
