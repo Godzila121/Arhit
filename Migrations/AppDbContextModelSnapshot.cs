@@ -170,6 +170,10 @@ namespace FoodDelivery.Migrations
                     b.Property<string>("OwnerId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Phone")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.HasIndex("OwnerId");

@@ -1,0 +1,27 @@
+@model IEnumerable<FoodDelivery.Models.Restaurant>
+
+@{
+    ViewData["Title"] = "Ресторани";
+}
+
+<div class="container my-5">
+    <h1 class="mb-4">Наші Ресторани</h1>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var restaurant in Model)
+        {
+            <div class="col">
+                <div class="card h-100 shadow-sm">
+                    <img src="https://via.placeholder.com/150" class="card-img-top" alt="Зображення ресторану">
+                    <div class="card-body">
+                        <h5 class="card-title">@restaurant.Name</h5>
+                        
+                        <p class="card-text">@(restaurant.Description ?? "Опис відсутній.")</p>
+                        
+                        <p class="card-text"><small class="text-muted">@restaurant.Address</small></p>
+                        <a asp-action="Details" asp-controller="Restaurant" asp-route-id="@restaurant.Id" class="btn btn-primary">Переглянути меню</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

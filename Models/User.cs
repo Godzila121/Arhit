@@ -1,7 +1,6 @@
 namespace FoodDelivery.Models; // <--- ДОДАНО ЦЕЙ РЯДОК
 using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic; // Можливо, знадобиться додати
-using Microsoft.AspNetCore.Identity;
 
 public class User : IdentityUser
 {
