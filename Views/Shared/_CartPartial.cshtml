@@ -1,0 +1,13 @@
+@model FoodDelivery.ViewModels.CartViewModel
+
+<li class="nav-item">
+    <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">
+        Кошик 
+        @if (Model != null && Model.Items.Any())
+        {
+            <span class="badge bg-primary rounded-pill">
+                @Model.Items.Sum(i => i.Quantity)
+            </span>
+        }
+    </a>
+</li>

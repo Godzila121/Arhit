@@ -1,53 +1,52 @@
 @model FoodDelivery.ViewModels.RestaurantDetailsViewModel
 
 @{
-    ViewData["Title"] = Model.Restaurant.Name;
-    Layout = "~/Views/Shared/_Layout.cshtml";
+ViewData["Title"] = Model.Restaurant.Name;
 }
 
-<div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="display-5 fw-bold">@Model.Restaurant.Name</h1>
-            <p class="text-muted">@Model.Restaurant.Address</p>
-        </div>
-        
-        <a href="@Url.Action("Index", "Restaurant")" class="btn btn-outline-secondary">
-     Повернутись до ресторанів
-</a>
-    </div>
+<div class="container mt-4">
+<div class="row">
+<div class="col-md-8">
+<h1>@Model.Restaurant.Name</h1>
+<p class="text-muted">@Model.Restaurant.Address | @Model.Restaurant.Phone</p>
+<p>@Model.Restaurant.Description</p>
+</div>
+</div>
 
-    <hr />
+<hr />
 
-    <h3 class="mt-4">Меню</h3>
-    @if (Model.Restaurant.MenuItems != null && Model.Restaurant.MenuItems.Any())
-    {
-        <div class="row row-cols-1 row-cols-md-2 g-4">
-            @foreach (var item in Model.Restaurant.MenuItems)
-            {
-                <div class="col">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body d-flex flex-column">
-                            <div class="d-flex justify-content-between">
-                                <h5 class="card-title">@item.Name</h5>
-                                <h5 class="card-title text-primary">@item.Price.ToString("C")</h5>
-                            </div>
-                            <p class="card-text flex-grow-1">@(item.Description ?? "Опис страви відсутній.")</p>
-                            <a asp-area="" asp-controller="Cart" asp-action="AddToCart" asp-route-menuItemId="@item.Id" class="btn btn-primary align-self-start">
-                                🛒 Додати в кошик
-                            </a>
-                        </div>
-                    </div>
+<h3>Меню</h3>
+
+@if (Model.Restaurant.MenuItems.Any())
+{
+    <div class="list-group">
+        @foreach (var item in Model.Restaurant.MenuItems)
+        {
+            <div class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                <div>
+                    <h5 class="mb-1">@item.Name</h5>
+                    <p class="mb-1">@item.Description</p>
+                    <strong class="text-primary">@item.Price.ToString("C")</strong>
                 </div>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="col-12">
-            <div class="alert alert-info" role="alert">
-                На жаль, у цього ресторану ще немає страв у меню.
+                
+                @* --- ОСЬ ТУТ ЗМІНИ --- *@
+                <form asp-controller="Cart" asp-action="AddToCart" method="post">
+                    <input type="hidden" name="menuItemId" value="@item.Id" />
+                    <button type="submit" class="btn btn-primary">
+                        Додати в кошик
+                    </button>
+                </form>
+                @* -------------------- *@
             </div>
-        </div>
-    }
+        }
+    </div>
+}
+else
+{
+    <p>У цього ресторану ще немає меню.</p>
+}
+
+@* Тут можна додати розділ для відгуків, як ви планували *@
+
+
 </div>

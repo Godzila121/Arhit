@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using FoodDelivery.Data;
 using FoodDelivery.Models;
+using FoodDelivery.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,12 +13,23 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 // 2. Налаштування системи автентифікації (Identity)
-// Додає сервіси для користувачів (User) та ролей (IdentityRole)
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>();
-builder.Services.AddControllersWithViews();
 
+// 3. Налаштування сесії
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
+// 4. Реєстрація сервісів для кошика
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<CartService>();
+
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -35,51 +47,53 @@ else
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
-
-// 3. Увімкнення автентифікації та авторизації
+app.UseSession();
 app.UseAuthentication();
 app.UseAuthorization();
 
-
-// 4. Налаштування маршрутизації
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
-
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-app.MapRazorPages(); // Для сторінок Identity (логін, реєстрація)
+app.MapRazorPages();
 
-
-// 5. Початкове заповнення даних (Seeding)
+// Початкове заповнення даних (Seeding)
 using (var scope = app.Services.CreateScope())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    // Застосування міграцій до бази даних
-    db.Database.Migrate();
+    var services = scope.ServiceProvider;
+    var db = services.GetRequiredService<AppDbContext>();
+    await db.Database.MigrateAsync();
 
-    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<User>>();
+    var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+    var userManager = services.GetRequiredService<UserManager<User>>();
+    var configuration = services.GetRequiredService<IConfiguration>(); // Отримуємо доступ до конфігурації
 
-    // Створення ролей, якщо вони не існують
-    if (!await roleManager.RoleExistsAsync("Admin"))
+    // Створення ролей з appsettings.json
+    var roles = configuration.GetSection("InitialSetup:Roles").Get<List<string>>();
+    if (roles != null)
     {
-        await roleManager.CreateAsync(new IdentityRole("Admin"));
+        foreach (var roleName in roles)
+        {
+            if (!await roleManager.RoleExistsAsync(roleName))
+            {
+                await roleManager.CreateAsync(new IdentityRole(roleName));
+            }
+        }
     }
-    if (!await roleManager.RoleExistsAsync("RestaurantOwner"))
-    {
-        await roleManager.CreateAsync(new IdentityRole("RestaurantOwner"));
-    }
-    // ... і так далі для інших ролей ...
 
-    // Створення користувача-адміністратора, якщо його немає
-    if (await userManager.FindByNameAsync("admin") == null)
+    // Створення користувача-адміністратора з appsettings.json
+    var adminEmail = configuration["InitialSetup:AdminEmail"];
+    var adminPassword = configuration["InitialSetup:AdminPassword"];
+    
+    if (!string.IsNullOrEmpty(adminEmail) && !string.IsNullOrEmpty(adminPassword) && await userManager.FindByEmailAsync(adminEmail) == null)
     {
-        var admin = new User { UserName = "admin", Email = "admin@example.com", EmailConfirmed = true };
-        var result = await userManager.CreateAsync(admin, "Admin123!");
+        var admin = new User { UserName = adminEmail, Email = adminEmail, EmailConfirmed = true };
+        var result = await userManager.CreateAsync(admin, adminPassword);
         if (result.Succeeded)
         {
+            // Додаємо користувача до ролі "Admin" (назва ролі теж береться з конфігурації)
             await userManager.AddToRoleAsync(admin, "Admin");
         }
     }
@@ -91,7 +105,7 @@ using (var scope = app.Services.CreateScope())
         db.Restaurants.Add(r);
         db.MenuItems.Add(new MenuItem { Restaurant = r, Name = "Pepperoni", Price = 9.99m });
         db.MenuItems.Add(new MenuItem { Restaurant = r, Name = "Margherita", Price = 8.50m });
-        db.SaveChanges();
+        await db.SaveChangesAsync();
     }
 }
 

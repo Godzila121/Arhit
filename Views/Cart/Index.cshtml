@@ -1,0 +1,57 @@
+@model FoodDelivery.ViewModels.CartViewModel
+
+@{
+ViewData["Title"] = "Ваш кошик";
+}
+
+<div class="container mt-4">
+<h2>@ViewData["Title"]</h2>
+
+@if (Model.Items.Any())
+{
+    <table class="table table-hover align-middle">
+        <thead class="thead-light">
+            <tr>
+                <th>Страва</th>
+                <th class="text-center">Ціна</th>
+                <th class="text-center">Кількість</th>
+                <th class="text-end">Сума</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>@item.MenuItem.Name</td>
+                    <td class="text-center">@item.MenuItem.Price.ToString("C")</td>
+                    <td class="text-center">@item.Quantity</td>
+                    <td class="text-end">@((item.MenuItem.Price * item.Quantity).ToString("C"))</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3" class="text-end fw-bold">Загалом:</td>
+                <td class="text-end fw-bold">@Model.Total.ToString("C")</td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <div class="d-flex justify-content-between mt-4">
+        <a asp-controller="Restaurant" asp-action="Index" class="btn btn-outline-secondary">
+            Продовжити покупки
+        </a>
+        <a asp-controller="Order" asp-action="Checkout" class="btn btn-primary">
+            Оформити замовлення
+        </a>
+    </div>
+}
+else
+{
+    <div class="alert alert-info mt-4">
+        Ваш кошик порожній. <a asp-controller="Restaurant" asp-action="Index">Почніть покупки</a>!
+    </div>
+}
+
+
+</div>

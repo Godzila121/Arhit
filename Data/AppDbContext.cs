@@ -32,6 +32,17 @@ namespace FoodDelivery.Data
                 .HasOne(oi => oi.MenuItem)
                 .WithMany()
                 .HasForeignKey(oi => oi.MenuItemId);
+                modelBuilder.Entity<MenuItem>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Order>()
+                .Property(p => p.Total)
+                .HasColumnType("decimal(18,2)");
+                
+            modelBuilder.Entity<OrderItem>()
+                .Property(p => p.Price)
+                .HasColumnType("decimal(18,2)");
         }
     }
 }

@@ -1,33 +1,41 @@
-// Controllers/CartController.cs
 using FoodDelivery.Data;
+using FoodDelivery.Services;
 using Microsoft.AspNetCore.Mvc;
-// + інші необхідні using
+using Microsoft.EntityFrameworkCore;
 
 public class CartController : Controller
 {
     private readonly AppDbContext _context;
+    private readonly CartService _cartService;
 
-    public CartController(AppDbContext context)
+    public CartController(AppDbContext context, CartService cartService)
     {
         _context = context;
+        _cartService = cartService;
     }
 
+    // ЦЕЙ МЕТОД - КЛЮЧ ДО ВИРІШЕННЯ ПРОБЛЕМИ
+    // Він має отримувати модель кошика і передавати її у представлення.
     public IActionResult Index()
     {
-        // Логіка для отримання даних кошика з сесії
-        return View();
+        var cart = _cartService.GetCart(); // Отримуємо правильну модель
+        return View(cart); // Передаємо її у View
     }
 
-    public IActionResult AddToCart(int menuItemId)
+    [HttpPost]
+    public async Task<IActionResult> AddToCart(int menuItemId)
     {
-        // Логіка для додавання товару в сесію
-        return RedirectToAction("Index", "Menu", new { restaurantId = GetRestaurantId(menuItemId) });
-    }
+        var menuItem = await _context.MenuItems
+                                     .Include(mi => mi.Restaurant)
+                                     .FirstOrDefaultAsync(mi => mi.Id == menuItemId);
 
-    // Допоміжний метод, щоб повернутись у меню того ж ресторану
-    private int GetRestaurantId(int menuItemId)
-    {
-        var menuItem = _context.MenuItems.Find(menuItemId);
-        return menuItem?.RestaurantId ?? 0;
+        if (menuItem == null)
+        {
+            return NotFound();
+        }
+
+        _cartService.AddItem(menuItem);
+
+        return RedirectToAction("Details", "Restaurant", new { id = menuItem.RestaurantId });
     }
 }

@@ -1,10 +1,13 @@
 // Areas/Admin/Controllers/DashboardController.cs
 using FoodDelivery.Data;
+using FoodDelivery.ViewModels; // <-- ДОДАЙТЕ ЦЕЙ using
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FoodDelivery.Areas.Admin.Controllers // <--- ДОДАНО: Простір імен
+namespace FoodDelivery.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = "Admin")] // <-- ВИПРАВЛЕНО: Тільки "Admin"
     public class DashboardController : Controller
     {
         private readonly AppDbContext _db;
@@ -12,11 +15,21 @@ namespace FoodDelivery.Areas.Admin.Controllers // <--- ДОДАНО: Прост�
 
         public IActionResult Index()
         {
+            // Отримуємо дані для панелі
             var totalOrders = _db.Orders.Count();
             var totalRestaurants = _db.Restaurants.Count();
             var averageRating = _db.Reviews.Any() ? _db.Reviews.Average(r => r.Rating) : 0;
-            var vm = new { totalOrders, totalRestaurants, averageRating };
-            return View(vm);
+
+            // Створюємо та заповнюємо ViewModel
+            var viewModel = new AdminDashboardViewModel
+            {
+                TotalOrders = totalOrders,
+                TotalRestaurants = totalRestaurants,
+                AverageRating = averageRating
+            };
+
+            // Передаємо ViewModel у представлення
+            return View(viewModel); // <-- ОНОВЛЕНО: Повертаємо ViewModel
         }
     }
-} // <--- ДОДАНО: Закриваюча дужка для простору імен
+}

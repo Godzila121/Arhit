@@ -1,14 +1,14 @@
-// Areas/Restaurant/Controllers/DashboardController.cs
 using FoodDelivery.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
-namespace FoodDelivery.Areas.Restaurant.Controllers // <--- ДОДАНО: Простір імен
+namespace FoodDelivery.Areas.Restaurant.Controllers
 {
-    [Area("Restaurant")] // <--- ДОДАНО: Атрибут Area для цієї області
-    [Authorize] // Доступ тільки для авторизованих
+    [Area("Restaurant")]
+    // ОНОВЛЕНО: Доступ тільки для власників ресторанів та адміністраторів
+    [Authorize(Roles = "RestaurantOwner, Admin")] 
     public class DashboardController : Controller
     {
         private readonly AppDbContext _context;
@@ -32,11 +32,18 @@ namespace FoodDelivery.Areas.Restaurant.Controllers // <--- ДОДАНО: Про
             // Якщо у користувача ще немає ресторану
             if (restaurant == null)
             {
-                // TODO: Перенаправити на сторінку створення ресторану або показати повідомлення
+                // Якщо користувач - адмін, він може не мати ресторану.
+                // Можна додати логіку для адміна або просто показати, що ресторану немає.
+                if (User.IsInRole("Admin"))
+                {
+                    // Можливо, перенаправити адміна на іншу сторінку
+                    // або показати повідомлення "Ви увійшли як адмін".
+                }
+                
                 return View("NoRestaurant"); 
             }
 
             return View(restaurant);
         }
     }
-} // <--- ДОДАНО: Закриваюча дужка для простору імен
+}
