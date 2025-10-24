@@ -1,0 +1,36 @@
+@model FoodDelivery.Models.Restaurant
+
+@{
+    ViewData["Title"] = "Деталі ресторану";
+}
+
+<h1>Деталі ресторану</h1>
+
+<div>
+    <h4>@Model.Name</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Назва</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Name)</dd>
+
+        <dt class="col-sm-3">Опис</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Description)</dd>
+
+        <dt class="col-sm-3">Телефон</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Phone)</dd>
+
+        <dt class="col-sm-3">Адреса</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Address)</dd>
+
+        <dt class="col-sm-3">Власник</dt>
+        <dd class="col-sm-9">@(Model.Owner?.UserName ?? "Не призначено")</dd>
+
+        <dt class="col-sm-3">Кількість страв у меню</dt>
+        <dd class="col-sm-9">@Model.MenuItems.Count</dd>
+    </dl>
+</div>
+<div class="mt-3">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Редагувати</a>
+    <a asp-controller="Menu" asp-action="Index" asp-route-restaurantId="@Model.Id" class="btn btn-info">Управління меню</a>
+    <a asp-action="Index" class="btn btn-secondary">Назад до списку</a>
+</div>

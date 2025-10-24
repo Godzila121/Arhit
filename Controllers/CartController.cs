@@ -1,41 +1,46 @@
-using FoodDelivery.Data;
 using FoodDelivery.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
-public class CartController : Controller
+// Додаємо правильний namespace
+namespace FoodDelivery.Controllers 
 {
-    private readonly AppDbContext _context;
-    private readonly CartService _cartService;
-
-    public CartController(AppDbContext context, CartService cartService)
+    public class CartController : Controller
     {
-        _context = context;
-        _cartService = cartService;
-    }
+        // 1. ЗАЛИШАЄМО ТІЛЬКИ СЕРВІС
+        // Контролер не повинен знати про базу даних. Він спілкується тільки з сервісом.
+        private readonly CartService _cartService;
 
-    // ЦЕЙ МЕТОД - КЛЮЧ ДО ВИРІШЕННЯ ПРОБЛЕМИ
-    // Він має отримувати модель кошика і передавати її у представлення.
-    public IActionResult Index()
-    {
-        var cart = _cartService.GetCart(); // Отримуємо правильну модель
-        return View(cart); // Передаємо її у View
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> AddToCart(int menuItemId)
-    {
-        var menuItem = await _context.MenuItems
-                                     .Include(mi => mi.Restaurant)
-                                     .FirstOrDefaultAsync(mi => mi.Id == menuItemId);
-
-        if (menuItem == null)
+        public CartController(CartService cartService)
         {
-            return NotFound();
+            _cartService = cartService;
         }
 
-        _cartService.AddItem(menuItem);
+        // 2. ОНОВЛЮЄМО МЕТОД ДЛЯ ВІДОБРАЖЕННЯ КОШИКА
+        // Він має повертати не просто список товарів, а ViewModel, 
+        // в якій є і товари, і загальна сума.
+        public IActionResult Index()
+        {
+            var cartViewModel = _cartService.GetCartViewModel();
+            return View(cartViewModel);
+        }
 
-        return RedirectToAction("Details", "Restaurant", new { id = menuItem.RestaurantId });
+        // 3. ПОВНІСТЮ ВИПРАВЛЯЄМО МЕТОД ДОДАВАННЯ В КОШИК
+        public async Task<IActionResult> AddToCart(int menuItemId)
+        {
+            // Більше ніякої логіки. Просто просимо сервіс додати товар за його ID.
+            await _cartService.AddItemToCartAsync(menuItemId);
+
+            // 4. ПОВЕРТАЄМО КОРИСТУВАЧА НАЗАД
+            // Цей код поверне користувача на ту сторінку, де він натиснув кнопку "Додати".
+            return Redirect(Request.Headers["Referer"].ToString() ?? "/");
+        }
+
+        // 5. ДОДАЄМО МЕТОД ДЛЯ ВИДАЛЕННЯ З КОШИКА (знадобиться пізніше)
+        public IActionResult RemoveFromCart(int menuItemId)
+        {
+            _cartService.RemoveItemFromCart(menuItemId);
+            return RedirectToAction("Index");
+        }
     }
 }

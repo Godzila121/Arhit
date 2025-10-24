@@ -1,0 +1,81 @@
+@using FoodDelivery.Models
+@model FoodDelivery.Models.Restaurant
+
+@{
+    ViewData["Title"] = "Панель управління рестораном";
+    var newOrders = Model.Orders?.Where(o => o.Status == OrderStatus.Pending).ToList() ?? new List<Order>();
+    var activeOrders = Model.Orders?.Where(o => o.Status == OrderStatus.Accepted || o.Status == OrderStatus.InTransit).ToList() ?? new List<Order>();
+}
+
+<h1>@Model.Name</h1>
+<p class="text-muted">@Model.Address</p>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-header">Нові замовлення</div>
+            <div class="card-body">
+                <h5 class="card-title">@newOrders.Count()</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-header">Активні замовлення</div>
+            <div class="card-body">
+                <h5 class="card-title">@activeOrders.Count()</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">Позицій в меню</div>
+            <div class="card-body">
+                <h5 class="card-title">@(Model.MenuItems?.Count() ?? 0)</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<h3>Нові замовлення (@newOrders.Count())</h3>
+@if (newOrders.Any())
+{
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Дата</th>
+                <th>Сума</th>
+                <th>Дії</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in newOrders)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.CreatedAt.ToString("g")</td>
+                    <td>@order.Total.ToString("C")</td>
+                    <td>
+                        <a href="#" class="btn btn-sm btn-success">Прийняти</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Немає нових замовлень.</p>
+}
+
+<hr />
+
+<h3>Управління меню</h3>
+<p>
+    <a asp-area="Restaurant" asp-controller="Menu" asp-action="Index" class="btn btn-primary">Перейти до меню</a>
+</p>

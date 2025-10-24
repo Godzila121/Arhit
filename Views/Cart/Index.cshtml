@@ -1,57 +1,46 @@
 @model FoodDelivery.ViewModels.CartViewModel
 
 @{
-ViewData["Title"] = "Ваш кошик";
+    ViewData["Title"] = "Ваш кошик";
 }
 
-<div class="container mt-4">
-<h2>@ViewData["Title"]</h2>
+<h1>Ваш кошик</h1>
 
 @if (Model.Items.Any())
 {
-    <table class="table table-hover align-middle">
-        <thead class="thead-light">
+    <table class="table">
+        <thead>
             <tr>
-                <th>Страва</th>
-                <th class="text-center">Ціна</th>
-                <th class="text-center">Кількість</th>
-                <th class="text-end">Сума</th>
+                <th>Назва</th>
+                <th>Ціна</th>
+                <th>Кількість</th>
+                <th>Всього</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var item in Model.Items)
             {
                 <tr>
-                    <td>@item.MenuItem.Name</td>
-                    <td class="text-center">@item.MenuItem.Price.ToString("C")</td>
-                    <td class="text-center">@item.Quantity</td>
-                    <td class="text-end">@((item.MenuItem.Price * item.Quantity).ToString("C"))</td>
+                    <td>@item.Name</td>
+                    <td>@item.Price.ToString("C")</td>
+                    <td>@item.Quantity</td>
+                    <td>@((item.Price * item.Quantity).ToString("C"))</td>
+                    <td>
+                        <a asp-controller="Cart" asp-action="RemoveFromCart" asp-route-menuItemId="@item.MenuItemId" class="btn btn-danger btn-sm">
+                            Видалити
+                        </a>
+                    </td>
                 </tr>
             }
         </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3" class="text-end fw-bold">Загалом:</td>
-                <td class="text-end fw-bold">@Model.Total.ToString("C")</td>
-            </tr>
-        </tfoot>
     </table>
 
-    <div class="d-flex justify-content-between mt-4">
-        <a asp-controller="Restaurant" asp-action="Index" class="btn btn-outline-secondary">
-            Продовжити покупки
-        </a>
-        <a asp-controller="Order" asp-action="Checkout" class="btn btn-primary">
-            Оформити замовлення
-        </a>
-    </div>
+    <div class="text-end">
+        <h3>Загальна сума: @Model.Total.ToString("C")</h3>
+<a asp-controller="Order" asp-action="Checkout" class="btn btn-success">Оформити замовлення</a>    </div>
 }
 else
 {
-    <div class="alert alert-info mt-4">
-        Ваш кошик порожній. <a asp-controller="Restaurant" asp-action="Index">Почніть покупки</a>!
-    </div>
+    <p>Ваш кошик порожній.</p>
 }
-
-
-</div>

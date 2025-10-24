@@ -1,0 +1,30 @@
+@model FoodDelivery.Models.Restaurant
+
+@{
+    ViewData["Title"] = "Видалення ресторану";
+}
+
+<h1>Видалення</h1>
+<h3 class="text-danger">Ви впевнені, що хочете видалити цей ресторан?</h3>
+<p class="text-danger">Цю дію неможливо буде скасувати.</p>
+
+<div>
+    <h4>@Model.Name</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Назва</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Name)</dd>
+
+        <dt class="col-sm-3">Адреса</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(model => model.Address)</dd>
+
+        <dt class="col-sm-3">Власник</dt>
+        <dd class="col-sm-9">@(Model.Owner?.UserName ?? "Не призначено")</dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Так, видалити" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-secondary">Скасувати</a>
+    </form>
+</div>

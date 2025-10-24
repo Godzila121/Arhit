@@ -1,53 +1,48 @@
-@model FoodDelivery.ViewModels.RestaurantDetailsViewModel
+@model IEnumerable<FoodDelivery.Models.Restaurant>
 
 @{
-    ViewData["Title"] = Model.Restaurant.Name;
-    // Вказуємо, що потрібно використовувати головний шаблон сайту
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Управління ресторанами";
 }
 
-<div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="display-5 fw-bold">@Model.Restaurant.Name</h1>
-            <p class="text-muted">@Model.Restaurant.Address</p>
-        </div>
-        <a href="@Url.Action("Index", "Restaurant")" class="btn btn-outline-secondary">
-     Повернутись до ресторанів
-</a>
-    </div>
+<h1>Управління ресторанами</h1>
 
-    <hr />
+<p>
+    <a asp-action="Create" class="btn btn-primary">Створити новий ресторан</a>
+</p>
 
-    <h3 class="mt-4">Меню</h3>
-    @if (Model.Restaurant.MenuItems != null && Model.Restaurant.MenuItems.Any())
-    {
-        <div class="row row-cols-1 row-cols-md-2 g-4">
-            @foreach (var item in Model.Restaurant.MenuItems)
-            {
-                <div class="col">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body d-flex flex-column">
-                            <div class="d-flex justify-content-between">
-                                <h5 class="card-title">@item.Name</h5>
-                                <h5 class="card-title text-primary">@item.Price.ToString("C")</h5>
-                            </div>
-                            <p class="card-text flex-grow-1">@(item.Description ?? "Опис страви відсутній.")</p>
-                            <a asp-area="" asp-controller="Cart" asp-action="AddToCart" asp-route-menuItemId="@item.Id" class="btn btn-primary align-self-start">
-                                🛒 Додати в кошик
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <div class="col-12">
-            <div class="alert alert-info" role="alert">
-                На жаль, у цього ресторану ще немає страв у меню.
-            </div>
-        </div>
-    }
-</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Назва
+            </th>
+            <th>
+                Адреса
+            </th>
+            <th>
+                Телефон
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Редагувати</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Деталі</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Видалити</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

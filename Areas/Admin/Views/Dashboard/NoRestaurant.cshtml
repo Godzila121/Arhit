@@ -1,0 +1,25 @@
+@{
+    ViewData["Title"] = "Ресторан не знайдено";
+}
+
+<div class="container text-center mt-5">
+    <h1 class="display-4">У вас ще немає ресторану</h1>
+    <p class="lead">
+        Схоже, за вашим обліковим записом ще не закріплено жодного ресторану.
+    </p>
+    <p>
+        Щоб почати роботу, вам необхідно створити сторінку свого закладу.
+    </p>
+    <hr>
+    <div>
+        @if (User.IsInRole("Admin"))
+        {
+            <p class="text-muted">Ви увійшли як адміністратор. Ви можете керувати всіма ресторанами в адмін-панелі.</p>
+            <a class="btn btn-info" asp-area="Admin" asp-controller="Restaurant" asp-action="Index">Перейти до управління ресторанами</a>
+        }
+        else
+        {
+            <a class="btn btn-primary btn-lg" asp-area="Admin" asp-controller="Restaurant" asp-action="Create">Створити мій ресторан</a>
+        }
+    </div>
+</div>

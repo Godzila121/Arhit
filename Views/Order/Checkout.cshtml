@@ -1,0 +1,40 @@
+@model FoodDelivery.ViewModels.CartViewModel
+
+@{
+    ViewData["Title"] = "Оформлення замовлення";
+}
+
+<h1>Оформлення замовлення</h1>
+
+<div class="row">
+    <div class="col-md-8">
+        <h4>Ваші товари:</h4>
+        <ul class="list-group mb-3">
+            @foreach (var item in Model.Items)
+            {
+                <li class="list-group-item d-flex justify-content-between lh-sm">
+                    <div>
+                        <h6 class="my-0">@item.Name</h6>
+                        <small class="text-muted">Кількість: @item.Quantity</small>
+                    </div>
+                    <span class="text-muted">@((item.Price * item.Quantity).ToString("C"))</span>
+                </li>
+            }
+            <li class="list-group-item d-flex justify-content-between">
+                <span>Всього (UAH)</span>
+                <strong>@Model.Total.ToString("C")</strong>
+            </li>
+        </ul>
+    </div>
+    <div class="col-md-4">
+        <h4>Адреса доставки</h4>
+        <form asp-action="CreateOrder" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group mb-3">
+                <label for="deliveryAddress" class="form-label">Введіть вашу адресу</label>
+                <input type="text" name="deliveryAddress" class="form-control" placeholder="м. Київ, вул. Хрещатик, 1" />
+            </div>
+            <button type="submit" class="w-100 btn btn-primary btn-lg">Підтвердити замовлення</button>
+        </form>
+    </div>
+</div>

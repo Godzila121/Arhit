@@ -1,5 +1,70 @@
-@model dynamic
-<h1>Admin Dashboard</h1>
-<ul>
-<li>Всього замовлень: @Model.totalOrders</li>
-<li>Всього ресто
+@model FoodDelivery.ViewModels.AdminDashboardViewModel
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h1>Панель адміністратора</h1>
+
+<div class="row">
+    <div class="col-md-3">
+        <div class="card text-white bg-primary mb-3">
+            <div class="card-header">Всього замовлень</div>
+            <div class="card-body">
+                <h5 class="card-title">@Model.TotalOrders</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-success mb-3">
+            <div class="card-header">Всього ресторанів</div>
+            <div class="card-body">
+                <h5 class="card-title">@Model.TotalRestaurants</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-info mb-3">
+            <div class="card-header">Всього користувачів</div>
+            <div class="card-body">
+                <h5 class="card-title">@Model.TotalUsers</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-white bg-warning mb-3">
+            <div class="card-header">Всього кур'єрів</div>
+            <div class="card-body">
+                <h5 class="card-title">@Model.TotalCouriers</h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr />
+
+<h3>Останні замовлення</h3>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID Замовлення</th>
+            <th>Користувач</th>
+            <th>Дата</th>
+            <th>Сума</th>
+            <th>Статус</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model.RecentOrders)
+        {
+            <tr>
+                <td>@order.Id</td>
+                <td>@(order.User?.UserName ?? "Користувача не знайдено")</td>
+                <td>@order.CreatedAt.ToString("g")</td>
+                <td>@order.Total.ToString("C")</td>
+                <td>@order.Status</td>
+            </tr>
+        }
+    </tbody>
+</table>

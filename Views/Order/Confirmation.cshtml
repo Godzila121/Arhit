@@ -1,0 +1,10 @@
+@{
+    ViewData["Title"] = "Замовлення підтверджено";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Дякуємо!</h1>
+    <p class="lead">Ваше замовлення №<strong>@ViewBag.OrderId</strong> успішно оформлено.</p>
+    <p>Ми вже почали його готувати!</p>
+    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">Повернутись на головну</a>
+</div>

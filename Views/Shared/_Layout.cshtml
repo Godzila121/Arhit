@@ -32,15 +32,15 @@
                               <a class="nav-link" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin</a>
                          </li>
                           <li class="nav-item">
-                               <a class="nav-link" asp-area="Restaurant" asp-controller="Dashboard" asp-action="Index">Restaurant</a>
+                               <a class="nav-link" asp-area="RestaurantOwner" asp-controller="Dashboard" asp-action="Index">Restaurant</a>
                           </li>
                     </ul>
                     
                     <ul class="navbar-nav">
                         @{
-                            var cart = CartService.GetCart();
-                        }
-                        <partial name="_CartPartial" model="cart" />
+    var cart = CartService.GetCartViewModel();
+}
+<partial name="_CartPartial" model="cart" />
                         
                         <partial name="_LoginPartial" />
                     </ul>
