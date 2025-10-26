@@ -152,6 +152,10 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcUmVzdGF1cmFudE93bmVyXFZpZXdzXE1lbnVcSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
+[E:/Arhitektura/FoodDelivery/Areas/RestaurantOwner/Views/Menu/SelectRestaurant.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcUmVzdGF1cmFudE93bmVyXFZpZXdzXE1lbnVcU2VsZWN0UmVzdGF1cmFudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [E:/Arhitektura/FoodDelivery/Areas/RestaurantOwner/Views/Shared/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcUmVzdGF1cmFudE93bmVyXFZpZXdzXFNoYXJlZFxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 

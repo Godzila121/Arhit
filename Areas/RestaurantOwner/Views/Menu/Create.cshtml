@@ -1,43 +1,62 @@
 @model FoodDelivery.Models.MenuItem
 
 @{
-    ViewData["Title"] = "Додати страву";
+    ViewData["Title"] = $"Додати страву до {ViewBag.RestaurantName}"; // Використовуємо ViewBag
+    // Отримуємо ID ресторану з ViewBag для прихованого поля
+    var restaurantId = ViewBag.RestaurantId;
 }
 
-<h1>Додати нову страву</h1>
+<h1>@ViewData["Title"]</h1>
+
+@if (ViewBag.ValidationErrors != null && ((List<string>)ViewBag.ValidationErrors).Any())
+{
+    <div class="alert alert-danger">
+        <h4>Приховані помилки валідації:</h4>
+        <ul>
+            @foreach (var error in (List<string>)ViewBag.ValidationErrors)
+            {
+                <li>@error</li>
+            }
+        </ul>
+    </div>
+}
+
+<h4>MenuItem</h4>
 <hr />
-
 <div class="row">
-    <div class="col-md-6">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="col-md-4">
+        @* --- ЗМІНЕНО ТУТ: Явно вказуємо контролер та area у формі (про всяк випадок) --- *@
+        <form asp-action="Create" asp-controller="Menu" asp-area="RestaurantOwner">
+        @* ------------------------------------------------------------------------------- *@
+            <div asp-validation-summary="All" class="text-danger"></div>
 
-            <div class="form-group mb-3">
-                <label asp-for="Name" class="control-label">Назва</label>
+            @* --- ДОДАНО ТУТ: Приховане поле для RestaurantId --- *@
+            <input type="hidden" asp-for="RestaurantId" value="@restaurantId" />
+            @* ---------------------------------------------------- *@
+
+            <div class="form-group mb-3"> @* Додав mb-3 для відступу *@
+                <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
-
             <div class="form-group mb-3">
-                <label asp-for="Description" class="control-label">Опис</label>
-                <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                <label asp-for="Description" class="control-label"></label>
+                <textarea asp-for="Description" class="form-control"></textarea> @* Змінив на textarea для зручності *@
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
-
             <div class="form-group mb-3">
-                <label asp-for="Price" class="control-label">Ціна</label>
-                <input asp-for="Price" class="form-control" type="number" step="0.01" />
+                <label asp-for="Price" class="control-label"></label>
+                <input asp-for="Price" class="form-control" type="number" step="0.01" /> @* Додав type="number" і step *@
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <input type="submit" value="Створити" class="btn btn-primary" />
-                <a asp-action="Index" class="btn btn-outline-secondary">Повернутись до меню</a>
+                 @* Посилання "Назад" веде на меню поточного ресторану *@
+                <a asp-action="Index" asp-route-restaurantId="@restaurantId" class="btn btn-secondary">Назад до списку</a>
             </div>
         </form>
     </div>
 </div>
 
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+

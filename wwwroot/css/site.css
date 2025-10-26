@@ -1,4 +1,4 @@
-/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\
+/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
 a.navbar-brand {
@@ -13,7 +13,7 @@ a {
 
 .form-control:focus {
     border-color: #0077cc;
-    box-shadow: 0 0 0 0.2rem #0077cc;
+    box-shadow: 0 0 0 0.2rem rgba(0, 119, 204, 0.25); /* Використовуємо rgba для прозорості */
 }
 
 .btn-primary {
@@ -28,12 +28,14 @@ a {
   border-color: #1861ac;
 }
 
-.btn-link.nav-link:focus {
+/* Необов'язково, можна залишити стандартний фокус Bootstrap */
+/* .btn-link.nav-link:focus {
   outline: black auto 1px;
-}
+} */
 
 html {
   font-size: 14px;
+  height: 100%; /* Додано: HTML має займати всю висоту */
 }
 @media (min-width: 768px) {
   html {
@@ -65,19 +67,41 @@ button.accept-policy {
   line-height: inherit;
 }
 
+/* --- ВИПРАВЛЕННЯ ДЛЯ "ЛИПКОГО" ФУТЕРА --- */
+
+/* Видалено 'position: relative;' з html, воно не потрібне для Flexbox */
 html {
-  position: relative;
   min-height: 100%;
+  height: 100%; /* Переконайся, що html займає всю висоту */
 }
 
 body {
-  margin-bottom: 60px;
+  /* Видалено 'margin-bottom: 60px;' */
+  display: flex; /* Додано: робимо body flex-контейнером */
+  flex-direction: column; /* Додано: елементи розташовуються вертикально */
+  min-height: 100%; /* Додано: body займає щонайменше повну висоту */
 }
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  overflow: scroll;
-  white-space: nowrap;
-  line-height: 60px;
+
+main { /* Додано: Стиль для основного контенту (main у _Layout.cshtml) */
+    flex-grow: 1; /* Дозволяє main зайняти весь доступний простір, виштовхуючи футер вниз */
+    flex-shrink: 0; /* Запобігає стисканню */
 }
+
+.footer { /* Використовуємо селектор класу з твого коду */
+  /* Видалено 'position: absolute;' */
+  /* Видалено 'bottom: 0;' */
+  /* Видалено 'width: 100%;' (Bootstrap сам подбає про ширину через .container всередині) */
+  /* Видалено 'line-height: 60px;' (Висота тепер визначається відступами py-3) */
+  /* Видалено 'white-space: nowrap;' */
+  /* Видалено 'overflow: scroll;' (Навряд чи це було потрібно) */
+  flex-shrink: 0; /* Додано: запобігає стисканню футера */
+}
+
+/* Переконайся, що ти використовуєш тег <main> у _Layout.cshtml, як показано раніше:
+   <div class="container">
+       <main role="main" class="pb-3">  <-- Ось цей елемент -->
+           @RenderBody()
+       </main>
+   </div>
+   Якщо використовуєш інший тег або клас, зміни селектор 'main' вище.
+*/

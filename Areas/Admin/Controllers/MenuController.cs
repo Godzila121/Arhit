@@ -52,7 +52,7 @@ namespace FoodDelivery.Areas.Admin.Controllers
         {
             if (ModelState.IsValid)
             {
-                menuItem.RestaurantId = restaurantId; // Прив'язуємо страву до ресторану
+                menuItem.RestaurantId = restaurantId;
                 _context.Add(menuItem);
                 await _context.SaveChangesAsync();
                 // Повертаємось до списку меню саме цього ресторану

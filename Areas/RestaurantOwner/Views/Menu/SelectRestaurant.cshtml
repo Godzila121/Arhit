@@ -1,0 +1,25 @@
+@{
+    ViewData["Title"] = "Виберіть ресторан для керування меню";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<p>Будь ласка, виберіть ресторан зі списку:</p>
+
+@if (ViewBag.Restaurants != null)
+{
+    <ul class="list-group">
+        @foreach (var item in (SelectList)ViewBag.Restaurants)
+        {
+            <li class="list-group-item">
+                <a asp-action="Index" asp-route-restaurantId="@item.Value">@item.Text</a>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p class="text-warning">Не знайдено жодного ресторану.</p>
+    <p><a asp-action="Create" asp-controller="Restaurant" asp-area="Admin">Створити ресторан?</a></p>
+}
+ <a asp-action="Index" asp-controller="Dashboard" asp-area="Admin" class="btn btn-secondary mt-3">Повернутись до панелі</a>

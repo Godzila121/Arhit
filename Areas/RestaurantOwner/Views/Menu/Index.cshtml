@@ -1,52 +1,45 @@
-@using FoodDelivery.Models
-@model IEnumerable<MenuItem>
+@model IEnumerable<FoodDelivery.Models.MenuItem>
 
 @{
-    ViewData["Title"] = "Меню ресторану";
-    var restaurantName = Model.FirstOrDefault()?.Restaurant.Name ?? "Наш";
-    // Вказуємо, що потрібно використовувати головний шаблон сайту
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = $"Меню ресторану {ViewBag.RestaurantName}"; // Використовуємо ViewBag
+    // Отримуємо ID ресторану з ViewBag для посилання "Створити"
+    var restaurantId = ViewBag.RestaurantId;
 }
 
-<div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h1 class="display-5 fw-bold">Меню "@restaurantName"</h1>
-            <p class="text-muted">Оберіть страви, які вам до смаку.</p>
-        </div>
-        <a href="@Url.Action("Index", "Restaurant", new { area = "" })" class="btn btn-outline-secondary">
-     Повернутись до ресторанів
-</a>
-    </div>
+<h1>@ViewData["Title"]</h1>
 
-    <div class="row row-cols-1 row-cols-md-2 g-4">
-        @if (Model.Any())
-        {
-            @foreach (var item in Model)
-            {
-                <div class="col">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body d-flex flex-column">
-                            <div class="d-flex justify-content-between">
-                                <h5 class="card-title">@item.Name</h5>
-                                <h5 class="card-title text-primary">@item.Price.ToString("C")</h5>
-                            </div>
-                            <p class="card-text flex-grow-1">@(item.Description ?? "Опис страви відсутній.")</p>
-                            <a asp-area="" asp-controller="Cart" asp-action="AddToCart" asp-route-menuItemId="@item.Id" class="btn btn-primary align-self-start">
-                                🛒 Додати в кошик
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            }
-        }
-        else
-        {
-            <div class="col-12">
-                <div class="alert alert-info" role="alert">
-                    На жаль, у цього ресторану ще немає страв у меню.
-                </div>
-            </div>
-        }
-    </div>
-</div>
+<p>
+    @* --- ЗМІНЕНО ТУТ: Додано параметр asp-route-restaurantId --- *@
+    <a asp-action="Create" asp-route-restaurantId="@restaurantId" class="btn btn-primary">Створити нову страву</a>
+    @* -------------------------------------------------------- *@
+    <a asp-action="Index" asp-controller="Dashboard" asp-area="Admin" class="btn btn-secondary">Повернутись до панелі</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(model => model.Name)</th>
+            <th>@Html.DisplayNameFor(model => model.Description)</th>
+            <th>@Html.DisplayNameFor(model => model.Price)</th>
+            @* Колонка Ресторан може бути не потрібна, якщо ми вже на сторінці меню конкретного ресторану *@
+            @* <th>@Html.DisplayNameFor(model => model.Restaurant)</th> *@
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.Name)</td>
+            <td>@Html.DisplayFor(modelItem => item.Description)</td>
+            <td>@Html.DisplayFor(modelItem => item.Price)</td>
+            @* <td>@Html.DisplayFor(modelItem => item.Restaurant.Name)</td> *@ @* Прибрали вивід ресторану *@
+            <td>
+                 @* Передаємо ID страви для редагування/видалення *@
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Редагувати</a> |
+                @* Можна додати Details, якщо потрібно *@
+                @* <a asp-action="Details" asp-route-id="@item.Id">Details</a> | *@
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Видалити</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
