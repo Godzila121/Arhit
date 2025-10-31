@@ -1,0 +1,7 @@
+SELECT TOP (1000) [Id]
+      ,[RestaurantId]
+      ,[Name]
+      ,[Description]
+      ,[Price]
+      ,[IsAvailable]
+  FROM [FoodDeliveryDb].[dbo].[MenuItems]

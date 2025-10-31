@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FoodDelivery.Controllers
 {
-    [Authorize] // Оформлювати замовлення можуть тільки авторизовані користувачі
+    [Authorize]
     public class OrderController : Controller
     {
         private readonly CartService _cartService;
@@ -24,24 +24,19 @@ namespace FoodDelivery.Controllers
             _userManager = userManager;
         }
 
-        // GET: /Order/Checkout
-        // Показує сторінку з формою для оформлення
         public IActionResult Checkout()
         {
             var cart = _cartService.GetCartViewModel();
             if (!cart.Items.Any())
             {
-                // Не дозволяємо оформлювати порожній кошик
                 return RedirectToAction("Index", "Cart");
             }
             return View(cart);
         }
 
-        // POST: /Order/Checkout
-        // Обробляє дані з форми і створює замовлення
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateOrder(string deliveryAddress) // Приймаємо адресу з форми
+        public async Task<IActionResult> CreateOrder(string deliveryAddress)
         {
             var cart = _cartService.GetCartViewModel();
             if (!cart.Items.Any())
@@ -64,7 +59,6 @@ namespace FoodDelivery.Controllers
                 CreatedAt = DateTime.UtcNow,
                 Status = OrderStatus.Pending,
                 Total = cart.Total
-                // Можна додати поле Address в модель Order і зберігати його тут
             };
 
             foreach (var item in cart.Items)
@@ -73,7 +67,7 @@ namespace FoodDelivery.Controllers
                 {
                     MenuItemId = item.MenuItemId,
                     Quantity = item.Quantity,
-                    Price = item.Price // Ціна за одиницю на момент замовлення
+                    Price = item.Price
                 };
                 order.Items.Add(orderItem);
             }
@@ -81,13 +75,10 @@ namespace FoodDelivery.Controllers
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
-            // Очищуємо кошик після успішного створення замовлення
 _cartService.ClearCart();
             return RedirectToAction("Confirmation", new { orderId = order.Id });
         }
 
-        // GET: /Order/Confirmation
-        // Сторінка "Дякуємо за замовлення"
         public IActionResult Confirmation(int orderId)
         {
             ViewBag.OrderId = orderId;

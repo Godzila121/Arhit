@@ -1,8 +1,7 @@
 @model FoodDelivery.Models.MenuItem
 
 @{
-    ViewData["Title"] = $"Додати страву до {ViewBag.RestaurantName}"; // Використовуємо ViewBag
-    // Отримуємо ID ресторану з ViewBag для прихованого поля
+    ViewData["Title"] = $"Додати страву до {ViewBag.RestaurantName}";
     var restaurantId = ViewBag.RestaurantId;
 }
 
@@ -25,34 +24,28 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        @* --- ЗМІНЕНО ТУТ: Явно вказуємо контролер та area у формі (про всяк випадок) --- *@
         <form asp-action="Create" asp-controller="Menu" asp-area="RestaurantOwner">
-        @* ------------------------------------------------------------------------------- *@
             <div asp-validation-summary="All" class="text-danger"></div>
-
-            @* --- ДОДАНО ТУТ: Приховане поле для RestaurantId --- *@
             <input type="hidden" asp-for="RestaurantId" value="@restaurantId" />
-            @* ---------------------------------------------------- *@
 
-            <div class="form-group mb-3"> @* Додав mb-3 для відступу *@
+            <div class="form-group mb-3">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group mb-3">
                 <label asp-for="Description" class="control-label"></label>
-                <textarea asp-for="Description" class="form-control"></textarea> @* Змінив на textarea для зручності *@
+                <textarea asp-for="Description" class="form-control"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group mb-3">
                 <label asp-for="Price" class="control-label"></label>
-                <input asp-for="Price" class="form-control" type="number" step="0.01" /> @* Додав type="number" і step *@
+                <input asp-for="Price" class="form-control" type="number" step="0.01" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
 
             <div class="form-group">
                 <input type="submit" value="Створити" class="btn btn-primary" />
-                 @* Посилання "Назад" веде на меню поточного ресторану *@
                 <a asp-action="Index" asp-route-restaurantId="@restaurantId" class="btn btn-secondary">Назад до списку</a>
             </div>
         </form>
@@ -60,3 +53,6 @@
 </div>
 
 
+ @section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

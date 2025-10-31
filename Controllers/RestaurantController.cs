@@ -29,7 +29,7 @@ namespace FoodDelivery.Controllers
             }
 
             var restaurant = await _context.Restaurants
-                .Include(r => r.MenuItems) // Включаємо меню
+                .Include(r => r.MenuItems)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (restaurant == null)
@@ -37,11 +37,10 @@ namespace FoodDelivery.Controllers
                 return NotFound();
             }
             
-            // Створюємо ViewModel для передачі даних у представлення
             var viewModel = new RestaurantDetailsViewModel
             {
                 Restaurant = restaurant,
-                Reviews = new List<Review>(), // Тут буде логіка для відгуків
+                Reviews = new List<Review>(),
                 NewReview = new Review()
             };
 

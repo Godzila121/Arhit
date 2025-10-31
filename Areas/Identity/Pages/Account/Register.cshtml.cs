@@ -2,7 +2,7 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations; // Додано для [Display]
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using FoodDelivery.Models; // Переконайся, що твій User тут
+using FoodDelivery.Models;
 
 namespace FoodDelivery.Areas.Identity.Pages.Account
 {
@@ -28,9 +28,8 @@ namespace FoodDelivery.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<User> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
-        private readonly RoleManager<IdentityRole> _roleManager; // <-- Це поле вже є у твоєму коді
+        private readonly RoleManager<IdentityRole> _roleManager;
 
-    // Конструктор вже приймає RoleManager, тут все гаразд
         public RegisterModel(
             UserManager<User> userManager,
             IUserStore<User> userStore,
@@ -45,7 +44,7 @@ namespace FoodDelivery.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
-            _roleManager = roleManager; // Присвоєння вже є
+            _roleManager = roleManager;
         }
 
         [BindProperty]
@@ -57,26 +56,24 @@ namespace FoodDelivery.Areas.Identity.Pages.Account
 
         public class InputModel
         {
-            [Required(ErrorMessage = "Електронна пошта є обов'язковою.")] // Додав повідомлення
-            [EmailAddress(ErrorMessage = "Некоректний формат електронної пошти.")] // Додав повідомлення
-            [Display(Name = "Електронна пошта")] // Переклав
+            [Required(ErrorMessage = "Електронна пошта є обов'язковою.")]
+            [EmailAddress(ErrorMessage = "Некоректний формат електронної пошти.")]
+            [Display(Name = "Електронна пошта")]
             public string Email { get; set; }
 
-            [Required(ErrorMessage = "Пароль є обов'язковим.")] // Додав повідомлення
+            [Required(ErrorMessage = "Пароль є обов'язковим.")]
             [StringLength(100, ErrorMessage = "{0} має бути довжиною щонайменше {2} та максимум {1} символів.", MinimumLength = 6)]
             [DataType(DataType.Password)]
-            [Display(Name = "Пароль")] // Переклав
+            [Display(Name = "Пароль")]
             public string Password { get; set; }
 
             [DataType(DataType.Password)]
-            [Display(Name = "Підтвердження пароля")] // Переклав
-            [Compare("Password", ErrorMessage = "Пароль та підтвердження пароля не співпадають.")] // Переклав
+            [Display(Name = "Підтвердження пароля")]
+            [Compare("Password", ErrorMessage = "Пароль та підтвердження пароля не співпадають.")]
             public string ConfirmPassword { get; set; }
 
-            // --- ДОДАЙ ЦЮ ВЛАСТИВІСТЬ ---
             [Display(Name = "Зареєструватися як власник ресторану?")]
             public bool IsRestaurantOwner { get; set; }
-            // ---------------------------
         }
 
 
@@ -92,7 +89,7 @@ namespace FoodDelivery.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = CreateUser(); // Використовуємо твій метод
+                var user = CreateUser();
 
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
@@ -100,9 +97,8 @@ namespace FoodDelivery.Areas.Identity.Pages.Account
 
                 if (result.Succeeded)
                 {
-                    _logger.LogInformation("Користувач створив новий акаунт з паролем."); // Переклав
+                    _logger.LogInformation("Користувач створив новий акаунт з паролем.");
 
-                    // --- ДОДАЙ ЦЮ ЛОГІКУ ПРИЗНАЧЕННЯ РОЛІ ---
                     string roleToAssign;
                     if (Input.IsRestaurantOwner)
                     {
@@ -110,21 +106,17 @@ namespace FoodDelivery.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                         roleToAssign = "User"; // Або інша назва ролі звичайного користувача
+                         roleToAssign = "User";
                     }
 
-                    // Перевіряємо, чи існує роль, і створюємо, якщо ні
                     if (!await _roleManager.RoleExistsAsync(roleToAssign))
                     {
                         await _roleManager.CreateAsync(new IdentityRole(roleToAssign));
                         _logger.LogWarning($"Роль '{roleToAssign}' не існувала і була створена під час реєстрації."); // Переклав
                     }
 
-                    // Додаємо користувача до обраної ролі
                     await _userManager.AddToRoleAsync(user, roleToAssign);
-                    _logger.LogInformation($"Користувача додано до ролі '{roleToAssign}'."); // Переклав
-                    // ------------------------------------------
-
+                    _logger.LogInformation($"Користувача додано до ролі '{roleToAssign}'.");
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
@@ -135,7 +127,7 @@ namespace FoodDelivery.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Підтвердіть вашу електронну пошту", // Переклав
+                    await _emailSender.SendEmailAsync(Input.Email, "Підтвердіть вашу електронну пошту",
                         $"Будь ласка, підтвердіть ваш акаунт, <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>натиснувши тут</a>."); // Переклав
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
@@ -154,11 +146,9 @@ namespace FoodDelivery.Areas.Identity.Pages.Account
                 }
             }
 
-            // Якщо дійшли сюди, щось пішло не так, показуємо форму знову
             return Page();
         }
 
-        // Твій метод CreateUser залишається без змін
         private User CreateUser()
         {
             try
@@ -173,7 +163,6 @@ namespace FoodDelivery.Areas.Identity.Pages.Account
             }
         }
 
-        // Твій метод GetEmailStore залишається без змін
         private IUserEmailStore<User> GetEmailStore()
         {
             if (!_userManager.SupportsUserEmail)

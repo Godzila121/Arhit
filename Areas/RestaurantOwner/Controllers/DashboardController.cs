@@ -1,5 +1,5 @@
 using FoodDelivery.Data;
-using FoodDelivery.Models; // <-- Переконайтеся, що цей using є
+using FoodDelivery.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,26 +24,16 @@ namespace FoodDelivery.Areas.RestaurantOwner.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            // --- ОНОВЛЕНИЙ ЗАПИТ ДО БАЗИ ДАНИХ ---
             var restaurant = await _context.Restaurants
-                .Include(r => r.MenuItems)
-                .Include(r => r.Orders)
-                    .ThenInclude(o => o.User) // <-- ОСНОВНЕ ВИПРАВЛЕННЯ: завантажуємо користувача для кожного замовлення
-                .FirstOrDefaultAsync(r => r.OwnerId == userId);
+                                           .AsNoTracking()
+                                           .FirstOrDefaultAsync(r => r.OwnerId == userId);
 
             if (restaurant == null)
             {
-                if (User.IsInRole("Admin"))
-                {
-                    // Для адміна це нормально, показуємо йому сторінку-заглушку
-                    return View("NoRestaurant");
-                }
-                
-                // Для власника ресторану без ресторану
                 return View("NoRestaurant"); 
             }
-
-            return View(restaurant);
+            
+            return RedirectToAction("Index", "Menu", new { area = "RestaurantOwner", restaurantId = restaurant.Id });
         }
     }
 }

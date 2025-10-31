@@ -1,15 +1,12 @@
-// Data/AppDbContext.cs
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore; // Додайте це для Identity
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using FoodDelivery.Models; // Додайте це для доступу до моделей
+using FoodDelivery.Models;
 
 namespace FoodDelivery.Data
 {
-    public class AppDbContext : IdentityDbContext<User> // Змінено з DbContext
+    public class AppDbContext : IdentityDbContext<User>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
-
-        // DbSet<User> вже не потрібен, він є в IdentityDbContext
 
         public DbSet<Restaurant> Restaurants { get; set; } = null!;
         public DbSet<MenuItem> MenuItems { get; set; } = null!;

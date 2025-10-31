@@ -1,4 +1,4 @@
-namespace FoodDelivery.Models; // <--- ДОДАНО ЦЕЙ РЯДОК
+namespace FoodDelivery.Models;
 
 public enum OrderStatus { Pending, Accepted, InTransit, Delivered, Cancelled }
 

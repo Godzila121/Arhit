@@ -8,10 +8,8 @@ public class Restaurant
     public string Phone { get; set; }= string.Empty;
     public string Address { get; set; }= string.Empty;
 
-    // --- ДОДАЙТЕ ЦІ РЯДКИ ---
-    public string? OwnerId { get; set; } // Зв'язок з User
+    public string? OwnerId { get; set; }
     public virtual User? Owner { get; set; }
-    // -------------------------
 
     public virtual ICollection<MenuItem> MenuItems { get; set; } = new List<MenuItem>();
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();

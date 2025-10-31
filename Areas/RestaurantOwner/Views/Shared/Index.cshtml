@@ -77,5 +77,5 @@ else
 
 <h3>Управління меню</h3>
 <p>
-    <a asp-area="Restaurant" asp-controller="Menu" asp-action="Index" class="btn btn-primary">Перейти до меню</a>
+    <a asp-area="RestaurantOwner" asp-controller="Menu" asp-action="Index" asp-route-restaurantId="@Model.Id" class="btn btn-primary">Перейти до меню</a>
 </p>

@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations; // <-- Додайте цей рядок
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore; // <-- Додайте цей рядок
+using Microsoft.EntityFrameworkCore;
 
 namespace FoodDelivery.Models;
 
